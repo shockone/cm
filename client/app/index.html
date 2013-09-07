@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" ng-app="contactManager">
+<head>
+  <meta charset="utf-8">
+  <title>Wise Contact Manager</title>
+  <link rel="stylesheet" href="css/app.css"/>
+  <link href="http://ajax.aspnetcdn.com/ajax/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/ng-grid.min.css" rel="stylesheet">
+</head>
+<body ng-controller="MainCtrl">
+
+  <ul class="nav nav-tabs">
+    <li ng-class="{active: $route.current.activeTab == 'view'}"><a href="#/contacts">View contacts</a></li>
+    <li ng-class="{active: $route.current.activeTab == 'select'}"><a href="#/select">Select contacts</a></li>
+  </ul>
+
+  <div ng-view></div>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.7/ng-grid.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.5.0/ui-bootstrap-tpls.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/services.js"></script>
+  <script src="js/controllers.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/directives.js"></script>
+  <script src="js/ui-utils.min.js"></script>
+  <script src="lib/ng-grid-flexible-height.js"></script>
+</body>
+</html>

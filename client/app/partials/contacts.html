@@ -1,0 +1,4 @@
+<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+
+Search: <input ng-model="searchQuery">
+<div class="gridStyle" ng-grid="contactsGrid"></div>
