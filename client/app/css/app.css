@@ -48,7 +48,8 @@ input[type="search"] {
 
 #edit-form, #email-form {
   width: 30%;
-  float: left;
+  position: fixed;
+  right: 0;
   vertical-align: top;
   box-sizing: border-box;
 }

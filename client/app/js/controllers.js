@@ -63,6 +63,18 @@ angular.module('contactManager.controllers', []).
 
   }]).
 
-  controller('SelectCtrl', ['$scope', function($scope) {
+  controller('SelectCtrl', ['$scope', 'Utility', function($scope, Utility) {
+		$scope.emails = '';
 		$scope.contactsGrid.multiSelect = true;
+
+		var manual_emails = []
+		$scope.contactsGrid.beforeSelectionChange = function(person, event){
+			manual_emails = Utility.manuallyEnteredEmails($scope);
+			return true;
+		};
+
+		$scope.contactsGrid.afterSelectionChange = function(){
+			var selected_emails = Utility.selectedEmails($scope);
+			$scope.emails = selected_emails.concat(manual_emails).join(', ');
+		};
   }]);

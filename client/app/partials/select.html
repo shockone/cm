@@ -2,12 +2,9 @@
 <div class="well" id="email-form">
   <div class="form-wrapper">
     To:
-    <input type="text" value="{{selectedContacts[0].email}}"/>
+    <input type="text" ng-model="emails"/>
     Subject:
     <input type="text"/>
     <textarea rows="10"></textarea>
-    <div ng-repeat="(key, value) in selectedContacts[0]">
-      <input type="text" class="input-small" placeholder="{{ key }}">
-    </div>
   </div>
 </div>

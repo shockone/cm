@@ -4,6 +4,6 @@
   <pre>{{ selectedContacts[0] | json }}</pre>
   {{ key }} {{ value }}
   <div ng-repeat="(key, value) in selectedContacts[0]">
-    <input type="text" class="input-small" placeholder="{{ key }}">
+    {{ key }}: <input type="text" class="input-small" ng-model="value">
   </div>
 </div>
