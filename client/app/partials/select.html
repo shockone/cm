@@ -1,34 +1,13 @@
-<angular-table model="listOfNumbers" default-sort-column="id" class="demoTable" style="padding-bottom: 1px;">
-  <header-row>
-    <header-column sortable="true" sort-field-name="id" class="demoHeaderColumn">
-      <div class="demoHeaderText">Id</div>
-      <sort-arrow-ascending></sort-arrow-ascending>
-      <sort-arrow-descending></sort-arrow-descending>
-    </header-column>
-    <header-column sortable="false" sort-field-name="name" class="demoHeaderColumn">Name</header-column>
-    <header-column sortable="true" sort-field-name="street" class="demoHeaderColumn">
-      <div  class="demoHeaderText">Street</div>
-      <sort-arrow-ascending></sort-arrow-ascending>
-      <sort-arrow-descending></sort-arrow-descending>
-    </header-column>
-  </header-row>
-
-  <row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" odd-color="#eeeeee">
-    <column>{{ row.id }}</column>
-    <column>{{ row.name }}</column>
-    <column>{{ row.street }}</input></column>
-  </row>
-</angular-table>
-
-<div class="demoDetailPane">
-  <div class="demoDetailInnerPane">
-    <p>Id: {{ selectedRow.id }}</p>
-    <p>Name: <input type="text" ng-model="selectedRow.name"></input></p>
-    <p>Street: <input type="text" ng-model="selectedRow.street"></input></p>
-
-    <p><button ng-click="addRows(1)">Add Row To End</button></p>
-    <p><button ng-click="listOfNumbers.pop()">Remove Last Row</button></p>
-    <p><button ng-click="listOfNumbers = []">Remove All Rows</button></p>
-    <p><button ng-click="addRows(50)">Add 50 Rows</button></p>
+<div class="gridStyle" ng-grid="contactsGrid"></div>
+<div class="well" id="email-form">
+  <div class="form-wrapper">
+    To:
+    <input type="text" value="{{selectedContacts[0].email}}"/>
+    Subject:
+    <input type="text"/>
+    <textarea rows="10"></textarea>
+    <div ng-repeat="(key, value) in selectedContacts[0]">
+      <input type="text" class="input-small" placeholder="{{ key }}">
+    </div>
   </div>
 </div>

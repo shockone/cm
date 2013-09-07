@@ -2,6 +2,14 @@
 
 body {
   padding-top: 5px;
+  width: 100%;
+  float:left;
+
+}
+
+input[type="search"] {
+  float: right;
+  margin-right: 5px;
 }
 
 .menu {
@@ -34,7 +42,25 @@ body {
 }
 
 .gridStyle {
+  width: 70%;
+  float: left;
+}
+
+#edit-form, #email-form {
+  width: 30%;
+  float: left;
+  vertical-align: top;
+  box-sizing: border-box;
+}
+
+.form-wrapper {
+  position: relative;
+}
+
+#email-form input {
   width: 100%;
 }
 
-.ui-match { background: yellow; }
+#email-form textarea {
+  width: 100%;
+}

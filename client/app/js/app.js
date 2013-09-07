@@ -16,7 +16,7 @@ angular.module('contactManager', ['contactManager.filters',
 		    }).
 		    when('/select', {
 				    templateUrl: 'partials/select.html',
-				    controller: 'MyCtrl2',
+				    controller: 'SelectCtrl',
 				    activeTab: 'select'}).
 		    otherwise({redirectTo: '/contacts'});
   }]);

@@ -1,4 +1,9 @@
-<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
-
-Search: <input ng-model="searchQuery">
+<!--<pre>{{ contacts | json}}</pre>-->
 <div class="gridStyle" ng-grid="contactsGrid"></div>
+<div class="well" id="edit-form">
+  <pre>{{ selectedContacts[0] | json }}</pre>
+  {{ key }} {{ value }}
+  <div ng-repeat="(key, value) in selectedContacts[0]">
+    <input type="text" class="input-small" placeholder="{{ key }}">
+  </div>
+</div>
