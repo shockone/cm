@@ -12,35 +12,6 @@ input[type="search"] {
   margin-right: 5px;
 }
 
-.menu {
-  list-style: none;
-  border-bottom: 0.1em solid black;
-  margin-bottom: 2em;
-  padding: 0 0 0.5em;
-}
-
-.menu:before {
-  content: "[";
-}
-
-.menu:after {
-  content: "]";
-}
-
-.menu > li {
-  display: inline;
-}
-
-.menu > li:before {
-  content: "|";
-  padding-right: 0.3em;
-}
-
-.menu > li:nth-child(1):before {
-  content: "";
-  padding: 0;
-}
-
 .gridStyle {
   width: 70%;
   float: left;
@@ -48,10 +19,15 @@ input[type="search"] {
 
 #edit-form, #email-form {
   width: 30%;
-  position: fixed;
-  right: 0;
+  float: left;
   vertical-align: top;
   box-sizing: border-box;
+}
+
+.ui-scrollfix {
+  position: fixed;
+  right: 0;
+  top: 0;
 }
 
 .form-wrapper {
@@ -64,4 +40,20 @@ input[type="search"] {
 
 #email-form textarea {
   width: 100%;
+}
+
+.alert {
+  width: 40%;
+  margin: auto;
+}
+
+.input-group-addon {
+  min-width:120px;
+  text-align:left !important;
+}
+
+.form-actions {
+  margin: 0;
+  background-color: transparent;
+  text-align: center;
 }

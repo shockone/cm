@@ -1,0 +1,37 @@
+<div class="gridStyle" ng-grid="contactsGridOptions"></div>
+<div ui-scrollfix class="well" id="edit-form">
+  <pre>{{ selectedContacts | json }}</pre>
+  <!--<div ng-repeat="(key, value) in contacts[0]">-->
+    <!--{{ key }}: <input type="text" class="input-small" ng-model="value">-->
+  <!--</div>-->
+  <form class="form-horizontal" role="form">
+
+    <div class="input-group">
+      <span class="input-group-addon">First Name</span>
+      <input type="text" class="form-control" placeholder="John" ng-model="selectedContact.first_name">
+    </div>
+
+    <br>
+
+    <div class="input-group">
+      <span class="input-group-addon">Last Name</span>
+      <input type="text" class="form-control" placeholder="Smith" ng-model="selectedContact.last_name">
+    </div>
+
+    <br>
+
+    <div class="input-group">
+      <span class="input-group-addon">Email</span>
+      <input type="email" class="form-control" placeholder="john@example.com" ng-model="selectedContact.email">
+    </div>
+
+    <br>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-default" ng-click="save()">Save</button>
+      <button type="submit" class="btn btn-default" ng-click="add()">Add contact</button>
+      <button type="submit" class="btn btn-default" ng-click="delete()">Delete</button>
+    </div>
+
+  </form>
+</div>

@@ -1,9 +1,0 @@
-<!--<pre>{{ contacts | json}}</pre>-->
-<div class="gridStyle" ng-grid="contactsGrid"></div>
-<div class="well" id="edit-form">
-  <pre>{{ selectedContacts[0] | json }}</pre>
-  {{ key }} {{ value }}
-  <div ng-repeat="(key, value) in selectedContacts[0]">
-    {{ key }}: <input type="text" class="input-small" ng-model="value">
-  </div>
-</div>
