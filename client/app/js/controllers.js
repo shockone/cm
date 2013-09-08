@@ -21,9 +21,6 @@ angular.module('contactManager.controllers', []).
 
 		$scope.contactsGridOptions = { data: 'contacts',
 			enableCellEdit: true,
-//      enableColumnResize:true,
-//      showFilter:true,
-//      enableRowSelection: false,
 			selectedItems: $scope.selectedContacts,
 			multiSelect: true,
 			columnDefs: columnDefs,
@@ -47,8 +44,7 @@ angular.module('contactManager.controllers', []).
 			$scope.alerts.splice(index, 1);
 		};
 
-		$scope.resetSelection = function(index){
-			index = typeof index !== 'undefined' ? index : 0;
+		$scope.resetSelection = function(){
 			//Deselect all items
 			//TODO: Use selectAll
 			angular.forEach($scope.contacts, function(data, index){
@@ -56,7 +52,7 @@ angular.module('contactManager.controllers', []).
 			});
 			//But select the first one on data loaded event
 			var e = $scope.$on('ngGridEventData', function(){
-				$scope.contactsGridOptions.selectRow(index, true);
+				$scope.contactsGridOptions.selectRow(0, true);
 				e();
 			});
 		};
@@ -97,9 +93,12 @@ angular.module('contactManager.controllers', []).
 
 		$scope.create = function(record){
 			var recordURI = APIServer + '/contacts/';
-			$http.post(recordURI, record).success(function(data){
-				if (data.msg == 'success') {
-					var full_name = [record.first_name, record.last_name].join(' ');
+			$http.post(recordURI, record).success(function(data, status){
+				if (status == 200) {
+					var db_record = data[0];
+					$scope.replaceContact(record, db_record);
+
+					var full_name = [db_record.first_name, db_record.last_name].join(' ');
 					$scope.alerts.push({type: 'success', msg: 'The record „' + full_name +	'“ has been successfully created.'});
 				} else {
 					$scope.alerts.push({type: 'error', msg: 'Oops. Something went wrong'});
@@ -115,8 +114,8 @@ angular.module('contactManager.controllers', []).
 				if (data.msg == 'success') {
 					var full_name = [record.first_name, record.last_name].join(' ');
 					$scope.alerts.push({type: 'success', msg: 'The record „' + full_name +	'“ has been successfully removed.'});
-					var index = $scope.removeContact(record);
-					$scope.resetSelection(index);
+					$scope.removeContact(record);
+					$scope.resetSelection();
 				} else {
 					$scope.alerts.push({type: 'error', msg: 'Oops. Something went wrong'});
 				}
@@ -133,20 +132,28 @@ angular.module('contactManager.controllers', []).
 				"address": {country: '', state: '', city:'', zip:'', address:''},
 				"phones": {cell_phone:'', work_phone:'', home_phone:''}
 			};
-			var contactsSize;
 			var e = $scope.$on('ngGridEventData', function() {
-				$scope.contactsGridOptions.selectItem(contactsSize-1, true);
+				$scope.contactsGridOptions.selectItem(0, true);
 				e();
+				window.scrollTo(0,0);
 			});
 
-			contactsSize = $scope.contacts.push(emptyContact);
+			$scope.contacts.unshift(emptyContact);
 		};
 
 		$scope.removeContact = function(record){
 			var index = $scope.contacts.indexOf(record);
 			$scope.contacts.splice(index, 1);
 			return index;
-		}
+		};
+
+		$scope.replaceContact = function(record, replacement){
+			var index = $scope.contacts.indexOf(record);
+			if (index !== -1) {
+				$scope.contacts[index] = replacement;
+			}
+			return index;
+		};
 
   }]).
 
