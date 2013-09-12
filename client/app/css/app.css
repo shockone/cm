@@ -48,8 +48,12 @@ input[type="search"] {
 }
 
 .input-group-addon {
-  min-width:120px;
-  text-align:left !important;
+  min-width:130px;
+  text-align:right !important;
+}
+
+.well .well .input-group-addon {
+  min-width:111px;
 }
 
 .form-actions {
