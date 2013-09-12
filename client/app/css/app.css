@@ -57,3 +57,11 @@ input[type="search"] {
   background-color: transparent;
   text-align: center;
 }
+
+textarea {
+  resize: vertical;
+}
+
+.nav.nav-tabs {
+  border: none;
+}

@@ -11,7 +11,11 @@ angular.module('contactManager.services', []).
 	factory('Utility', function () {
 		return {
 
-			selectedEmails: function (scope) {
+			allEmails: function(scope){
+				return scope.emails.split(/,\s*/);
+			},
+
+			selectedEmails: function(scope){
 				var emails = [];
 				angular.forEach(scope.selectedContacts, function(data, index){
 					emails.push(data.email);
@@ -19,15 +23,14 @@ angular.module('contactManager.services', []).
 				return emails;
 			},
 
-			manuallyEnteredEmails: function (scope) {
-				var all_emails      = scope.emails.split(/,\s*/);
-				var selected_emails = this.selectedEmails(scope);
+			manuallyEnteredEmails: function(scope){
+				var allEmails = this.allEmails(scope);
+				var selectedEmails = this.selectedEmails(scope);
 
-				return this.arrayDifference(selected_emails, all_emails);
+				return this.arrayDifference(selectedEmails, allEmails);
 			},
 
-			arrayDifference: function(a1, a2)
-			{
+			arrayDifference: function(a1, a2){
 				var a=[], diff=[];
 				for(var i=0;i<a1.length;i++)
 					a[a1[i]]=true;

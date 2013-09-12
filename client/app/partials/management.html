@@ -1,9 +1,7 @@
 <div class="gridStyle" ng-grid="contactsGridOptions"></div>
 <div ui-scrollfix class="well" id="edit-form">
-  <pre>{{ selectedContacts | json }}</pre>
-  <!--<div ng-repeat="(key, value) in contacts[0]">-->
-    <!--{{ key }}: <input type="text" class="input-small" ng-model="value">-->
-  <!--</div>-->
+  <!--<pre>{{ selectedContact | json }}</pre>-->
+
   <form class="form-horizontal" role="form">
 
     <div class="input-group">
@@ -26,6 +24,74 @@
     </div>
 
     <br>
+
+    <div class="input-group">
+      <span class="input-group-addon">Birth Date</span>
+      <input type="text" class="form-control" ng-model="selectedContact.birth_date">
+    </div>
+
+    <br>
+
+    <div class="well">
+      <h4>Address</h4>
+
+      <div class="input-group">
+        <span class="input-group-addon">Country</span>
+        <input type="text" class="form-control" ng-model="selectedContact.address.country">
+      </div>
+
+      <br>
+
+      <div class="input-group">
+        <span class="input-group-addon">State</span>
+        <input type="text" class="form-control" ng-model="selectedContact.address.state">
+      </div>
+
+      <br>
+
+      <div class="input-group">
+        <span class="input-group-addon">City</span>
+        <input type="text" class="form-control" ng-model="selectedContact.address.city">
+      </div>
+
+      <br>
+
+      <div class="input-group">
+        <span class="input-group-addon">ZIP Code</span>
+        <input type="text" class="form-control" ng-model="selectedContact.address.zip">
+      </div>
+
+      <br>
+
+      <div class="input-group">
+        <span class="input-group-addon">Street address</span>
+        <input type="text" class="form-control" ng-model="selectedContact.address.address">
+      </div>
+    </div>
+
+    <div class="well">
+      <h4>Phones</h4>
+
+      <div class="input-group">
+        <span class="input-group-addon">Cell phone</span>
+        <input type="text" class="form-control" ng-model="selectedContact.phones.cell_phone">
+      </div>
+
+      <br>
+
+      <div class="input-group">
+        <span class="input-group-addon">Home Phone</span>
+        <input type="text" class="form-control" ng-model="selectedContact.phones.home_phone">
+      </div>
+
+      <br>
+
+      <div class="input-group">
+        <span class="input-group-addon">Work Phone</span>
+        <input type="text" class="form-control" ng-model="selectedContact.phones.work_phone">
+      </div>
+
+    </div>
 
     <div class="form-actions">
       <button type="submit" class="btn btn-default" ng-click="save()">Save</button>

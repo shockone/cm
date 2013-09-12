@@ -123,23 +123,23 @@ angular.module('contactManager.controllers', []).
 		};
 
 
-		$scope.add = function(){
-			var emptyContact = {
-				"first_name": '',
-				"last_name": '',
-				"email": '',
-				"birth_date": '',
-				"address": {country: '', state: '', city:'', zip:'', address:''},
-				"phones": {cell_phone:'', work_phone:'', home_phone:''}
-			};
-			var e = $scope.$on('ngGridEventData', function() {
-				$scope.contactsGridOptions.selectItem(0, true);
-				e();
-				window.scrollTo(0,0);
-			});
+$scope.add = function(){
+	var emptyContact = {
+		"first_name": '',
+		"last_name": '',
+		"email": '',
+		"birth_date": '',
+		"address": {country: '', state: '', city:'', zip:'', address:''},
+		"phones": {cell_phone:'', work_phone:'', home_phone:''}
+	};
+	var e = $scope.$on('ngGridEventData', function() {
+		$scope.contactsGridOptions.selectItem(0, true);
+		e();
+		window.scrollTo(0,0);
+	});
 
-			$scope.contacts.unshift(emptyContact);
-		};
+	$scope.contacts.unshift(emptyContact);
+};
 
 		$scope.removeContact = function(record){
 			var index = $scope.contacts.indexOf(record);
@@ -171,4 +171,12 @@ angular.module('contactManager.controllers', []).
 			var selected_emails = Utility.selectedEmails($scope);
 			$scope.emails = selected_emails.concat(manual_emails).join(', ');
 		};
+
+		$scope.sendMail = function(){
+			var mailWindow =  window.open('mailto:'   + encodeURIComponent(Utility.allEmails($scope)) +
+																		'?subject=' + encodeURIComponent($scope.subject) +
+																		'&body='    + encodeURIComponent($scope.body));
+			setTimeout(function() { mailWindow.close();},1000);
+
+		}
   }]);
