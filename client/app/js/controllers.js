@@ -17,7 +17,7 @@ angular.module('contactManager.controllers', []).
 		var columnDefs = [{ field: 'first_name', displayName: 'First Name'},
 			{ field: 'last_name', displayName: 'Last Name'},
 			{ field: 'email', displayName: 'Email'},
-			{ field: 'birth_date', displayName: 'Birth Date'}];
+			{ field: 'phones.cell_phone', displayName: 'Cell Phone'}];
 
 		$scope.contactsGridOptions = { data: 'contacts',
 			enableCellEdit: true,
@@ -123,23 +123,23 @@ angular.module('contactManager.controllers', []).
 		};
 
 
-$scope.add = function(){
-	var emptyContact = {
-		"first_name": '',
-		"last_name": '',
-		"email": '',
-		"birth_date": '',
-		"address": {country: '', state: '', city:'', zip:'', address:''},
-		"phones": {cell_phone:'', work_phone:'', home_phone:''}
-	};
-	var e = $scope.$on('ngGridEventData', function() {
-		$scope.contactsGridOptions.selectItem(0, true);
-		e();
-		window.scrollTo(0,0);
-	});
+		$scope.add = function(){
+			var emptyContact = {
+				"first_name": '',
+				"last_name": '',
+				"email": '',
+				"birth_date": '',
+				"address": {country: '', state: '', city:'', zip:'', address:''},
+				"phones": {cell_phone:'', work_phone:'', home_phone:''}
+			};
+			var e = $scope.$on('ngGridEventData', function() {
+				$scope.contactsGridOptions.selectItem(0, true);
+				e();
+				window.scrollTo(0,0);
+			});
 
-	$scope.contacts.unshift(emptyContact);
-};
+			$scope.contacts.unshift(emptyContact);
+		};
 
 		$scope.removeContact = function(record){
 			var index = $scope.contacts.indexOf(record);
