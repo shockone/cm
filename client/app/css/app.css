@@ -1,60 +1,87 @@
 body {
-  padding-top: 5px;
-  width: 100%;
-  float:left;
+    padding-top: 5px;
+    width: 100%;
+    float: left;
 
 }
 
-input[type="search"] {
-  float: right;
-  margin-right: 5px;
+nav {
+    margin-left: 5px;
 }
+
+.nav {
+    display: inline-block;
+}
+
+#add-button {
+
+    margin-right: 20px;
+}
+
+#save-button {
+    width: 60%;
+    margin-right: 10px;
+}
+
 
 .gridStyle {
-  width: 70%;
-  float: left;
+    width: 70%;
+    float: left;
 }
 
 #edit-form, #email-form {
-  width: 30%;
-  float: left;
-  vertical-align: top;
-  box-sizing: border-box;
+    width: 30%;
+    float: left;
+    vertical-align: top;
+    box-sizing: border-box;
 }
 
 .ui-scrollfix {
-  position: fixed;
-  right: 0;
-  top: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
 }
 
 .form-wrapper {
-  position: relative;
+    position: relative;
 }
 
 #email-form input {
-  width: 100%;
+    width: 100%;
 }
 
 #email-form textarea {
-  width: 100%;
+    width: 100%;
 }
 
 .input-group-addon {
-  min-width:110px;
-  text-align:right !important;
+    min-width: 125px;
+    text-align: right !important;
 }
 
 .form-actions {
-  margin: 0;
-  background-color: transparent;
-  text-align: center;
+    margin: 0;
+    background-color: transparent;
+    text-align: center;
 }
 
 textarea {
-  resize: vertical;
+    resize: vertical;
 }
 
 .nav.nav-tabs {
-  border: none;
+    border: none;
+}
+
+.input-group-addon label {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+input.ng-invalid {
+    background-color: rgba(255, 0, 0, 0.17);
+}
+
+.col-sm-4 .input-group-addon {
+    min-width: 0;
 }

@@ -4,30 +4,19 @@
 
 angular.module('contactManager.controllers', []).
 
-	controller('MainCtrl', ['$scope', '$route', '$http', 'APIServer', 'toaster', 'Utility',
-		function ($scope, $route, $http, APIServer, toaster, Utility) {
+	controller('MainCtrl', ['$scope', '$route', '$location', '$http', 'APIServer', 'toaster', 'Utility',
+		function ($scope, $route, $location, $http, APIServer, toaster, Utility) {
 
-			//Get contacts JSON from EC2
+			//Get contacts from EC2
 			$http.get(APIServer + '/contacts').success(function (data) {
+				//Choose the default phone number
+				angular.forEach(data, function(value, index){
+					var p = data[index].phones;
+					p.default_phone_value =	p[p.default_phone || 'cell_phone']
+				});
+
 				$scope.contacts = data;
 			});
-
-
-			$scope.showNotification = function (type, text) {
-				toaster.pop(type, '', text);
-			};
-
-
-			$scope.resetSelection = function () {
-				//Deselect all items but select the first one on data loaded event
-				$scope.contactsGridOptions.selectAll(false);
-				var e = $scope.$on('ngGridEventData', function () {
-					$scope.contactsGridOptions.selectRow(0, true);
-					e();
-				});
-			};
-
-
 
 
 			//Setup the grid
@@ -38,7 +27,7 @@ angular.module('contactManager.controllers', []).
 				{ field: 'first_name', displayName: 'First Name'},
 				{ field: 'last_name', displayName: 'Last Name'},
 				{ field: 'email', displayName: 'Email'},
-				{ field: 'phones.cell_phone', displayName: 'Cell Phone'}
+				{ field: 'phones.default_phone_value', displayName: 'Phone'}
 			];
 
 			$scope.contactsGridOptions = { data: 'contacts',
@@ -51,6 +40,7 @@ angular.module('contactManager.controllers', []).
 					filterText: '',
 					useExternalFilter: false
 				}};
+
 
 			$scope.$route = $route;
 
@@ -72,14 +62,51 @@ angular.module('contactManager.controllers', []).
 			};
 
 
+			$scope.showNotification = function (type, text) {
+				toaster.pop(type, '', text);
+			};
+
+
+			$scope.resetSelection = function () {
+				//Deselect all items but select the first one on data loaded event
+				$scope.contactsGridOptions.selectAll(false);
+				$scope.contactsGridOptions.selectRow(0, true);
+
+				var e = $scope.$on('ngGridEventData', function () {
+					$scope.contactsGridOptions.selectRow(0, true);
+					e();
+				});
+			};
+
+
+			$scope.add = function () {
+				$location.path('management');
+				var emptyContact = {
+					"first_name": '',
+					"last_name": '',
+					"email": '',
+					"birth_date": '',
+					"address": {country: '', state: '', city: '', zip: '', address: ''},
+					"phones": {cell_phone: '', work_phone: '', home_phone: ''}
+				};
+				var e = $scope.$on('ngGridEventData', function () {
+					$scope.contactsGridOptions.selectItem(0, true);
+					e();
+					window.scrollTo(0, 0);
+				});
+
+				$scope.contacts.unshift(emptyContact);
+			};
 		}]).
 
-	controller('ManagementCtrl', ['$scope', '$http', 'APIServer', function ($scope, $http, APIServer) {
+	controller('ManagementCtrl', ['$scope', '$http', 'APIServer', 'Utility', function ($scope, $http, APIServer, Utility) {
 		$scope.$parent.multiSelect = false;
 		$scope.resetSelection();
 
 		$scope.save = function () {
 			var record = $scope.selectedContact;
+			record.birth_date = Utility.formatDate(record.birth_date);
+			console.log(record.birth_date);
 
 			if (record._id) {
 				$scope.update(record);
@@ -135,22 +162,9 @@ angular.module('contactManager.controllers', []).
 		};
 
 
-		$scope.add = function () {
-			var emptyContact = {
-				"first_name": '',
-				"last_name": '',
-				"email": '',
-				"birth_date": '',
-				"address": {country: '', state: '', city: '', zip: '', address: ''},
-				"phones": {cell_phone: '', work_phone: '', home_phone: ''}
-			};
-			var e = $scope.$on('ngGridEventData', function () {
-				$scope.$parent.contactsGridOptions.selectItem(0, true);
-				e();
-				window.scrollTo(0, 0);
-			});
-
-			$scope.$parent.contacts.unshift(emptyContact);
+		$scope.updatePhone = function() {
+			var c = $scope.selectedContact;
+			c.phones.default_phone_value = c.phones[c.phones.default_phone];
 		};
 
 

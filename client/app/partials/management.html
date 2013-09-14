@@ -1,8 +1,6 @@
-<!--<div class="gridStyle" ng-grid="contactsGridOptions"></div>-->
 <div ui-scrollfix class="well" id="edit-form">
-  <!--<pre>{{ selectedContact | json }}</pre>-->
 
-  <form class="form-horizontal" role="form">
+  <form class="form-horizontal" role="form" novalidate>
 
     <div class="input-group">
       <span class="input-group-addon">First Name</span>
@@ -19,15 +17,15 @@
     <br>
 
     <div class="input-group">
-      <span class="input-group-addon">Email</span>
-      <input type="text" class="form-control" placeholder="john@example.com" ng-model="selectedContact.email">
+      <span class="input-group-addon" >Email</span>
+      <input type="text" class="form-control" placeholder="john@example.com" ng-model="selectedContact.email" required>
     </div>
 
     <br>
 
     <div class="input-group">
       <span class="input-group-addon">Birth Date</span>
-      <input type="text" class="form-control" ng-model="selectedContact.birth_date">
+      <input type="text" class="form-control" ng-model="selectedContact.birth_date" id="birth-date" bs-datepicker>
     </div>
 
     <br>
@@ -48,17 +46,19 @@
 
     <br>
 
-    <div class="input-group">
+      <div class="row">
+
+    <div class="input-group col-sm-8">
       <span class="input-group-addon">City</span>
       <input type="text" class="form-control" ng-model="selectedContact.address.city">
     </div>
 
-    <br>
-
-    <div class="input-group">
-      <span class="input-group-addon">ZIP Code</span>
+    <div class="input-group col-sm-4">
+      <span class="input-group-addon">ZIP</span>
       <input type="text" class="form-control" ng-model="selectedContact.address.zip">
     </div>
+
+      </div>
 
     <br>
 
@@ -70,32 +70,47 @@
     <br>
 
     <h4>Phones</h4>
+    <p class="help-block">Selected phone will be displayed in the table</p>
 
-    <div class="input-group">
-      <span class="input-group-addon">Cell phone</span>
-      <input type="text" class="form-control" ng-model="selectedContact.phones.cell_phone">
+      <div class="input-group">
+      <span class="input-group-addon">
+        <label>
+            Cell phone
+            <input type="radio" name="default_phone" value="cell_phone" ng-model="selectedContact.phones.default_phone" ng-click="updatePhone()">
+        </label>
+      </span>
+      <input type="text" class="form-control" ng-model="selectedContact.phones.cell_phone" ng-change="updatePhone()">
     </div>
 
     <br>
 
     <div class="input-group">
-      <span class="input-group-addon">Home Phone</span>
-      <input type="text" class="form-control" ng-model="selectedContact.phones.home_phone">
+      <span class="input-group-addon">
+          <label>
+              Home phone
+              <input type="radio" name="default_phone" value="home_phone" ng-model="selectedContact.phones.default_phone" ng-click="updatePhone()">
+          </label>
+      </span>
+      <input type="text" class="form-control" ng-model="selectedContact.phones.home_phone" ng-change="updatePhone()">
     </div>
 
     <br>
 
     <div class="input-group">
-      <span class="input-group-addon">Work Phone</span>
-      <input type="text" class="form-control" ng-model="selectedContact.phones.work_phone">
+      <span class="input-group-addon">
+          <label>
+              Work phone
+              <input type="radio" name="default_phone" value="work_phone" ng-model="selectedContact.phones.default_phone" ng-click="updatePhone()">
+          </label>
+      </span>
+      <input type="text" class="form-control" ng-model="selectedContact.phones.work_phone" ng-change="updatePhone()">
     </div>
 
     <br>
 
     <div class="form-actions">
-      <button type="submit" class="btn btn-default" ng-click="save()">Save</button>
-      <button type="submit" class="btn btn-default" ng-click="add()">Add contact</button>
-      <button type="submit" class="btn btn-default" ng-click="delete()">Delete</button>
+      <button type="submit" class="btn btn-primary" id="save-button" ng-click="save()">Save</button>
+      <button type="submit" class="btn btn-danger" ng-click="delete()">Delete</button>
     </div>
 
   </form>

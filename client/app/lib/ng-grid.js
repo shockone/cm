@@ -2671,7 +2671,7 @@
 	var ngSelectionProvider = function (grid, $scope, $parse) {
 		var self = this;
 
-		// If multiSelect is a string, bind it to the corresponding variable, as with data.
+		// If multiSelect value is a string, bind it to the corresponding variable, as with data.
 		if(typeof grid.config.multiSelect === 'string') {
 			$scope.$parent.$watch(grid.config.multiSelect, function (newMultiSelectValue) {
 				self.multi = newMultiSelectValue;
