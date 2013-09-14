@@ -7,7 +7,8 @@ angular.module('contactManager', ['contactManager.filters',
                                   'contactManager.controllers',
                                   'ui.bootstrap',
 																	'ui.utils',
-															    'ngGrid']
+															    'ngGrid',
+																	'toaster']
 							).
   config(['$routeProvider', function($routeProvider) {
     $routeProvider.

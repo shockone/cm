@@ -7,6 +7,7 @@
   <!--<link href="http://ajax.aspnetcdn.com/ajax/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">-->
   <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="css/ng-grid.min.css" rel="stylesheet">
+  <link href="css/toaster.css" rel="stylesheet">
 </head>
 <body ng-controller="MainCtrl">
 
@@ -16,8 +17,7 @@
     <input type="search" placeholder="Search" ng-model="searchQuery" ui-scrollfix>
   </ul>
 
-  <!--TODO: Make them pop over-->
-  <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+  <toaster-container> </toaster-container>
 
   <div ng-view></div>
 
@@ -32,5 +32,6 @@
   <script src="js/directives.js"></script>
   <script src="lib/ui-utils.min.js"></script>
   <script src="lib/ng-grid-flexible-height.js"></script>
+  <script src="lib/toaster/toaster.js"></script>
 </body>
 </html>

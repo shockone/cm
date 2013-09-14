@@ -4,12 +4,16 @@
 
 angular.module('contactManager.controllers', []).
 
-	controller('MainCtrl', ['$scope', '$route', '$http', 'APIServer', function($scope, $route, $http, APIServer) {
+	controller('MainCtrl', ['$scope', '$route', '$http', 'APIServer', 'toaster', function($scope, $route, $http, APIServer, toaster) {
 
 //		Get contacts JSON from EC2
 		$http.get(APIServer + '/contacts').success(function(data) {
 			$scope.contacts = data;
 		});
+
+		$scope.showNotification = function(type, text){
+			toaster.pop(type, '', text);
+		};
 
 		$scope.$route = $route;
 		$scope.selectedContacts = [];
@@ -35,14 +39,6 @@ angular.module('contactManager.controllers', []).
 			$scope.contactsGridOptions.filterOptions.filterText = searchQuery;
 		});
 
-		$scope.alerts = [];
-//			{ type: 'error', msg: 'Oh snap! Change a few things up and try submitting again.' },
-//			{ type: 'success', msg: 'Well done! You successfully read this important alert message.' }
-//		];
-
-		$scope.closeAlert = function(index) {
-			$scope.alerts.splice(index, 1);
-		};
 
 		$scope.resetSelection = function(){
 			//Deselect all items
@@ -84,9 +80,9 @@ angular.module('contactManager.controllers', []).
 			$http.put(recordURI, record).success(function(data){
 				if (data.msg == 'success') {
 					var full_name = [record.first_name, record.last_name].join(' ');
-					$scope.alerts.push({type: 'success', msg: 'The record „' + full_name +	'“ has been successfully updated.'});
+					$scope.showNotification('success', 'The record „' + full_name +	'“ has been successfully updated.');
 				} else {
-					$scope.alerts.push({type: 'error', msg: 'Oops. Something went wrong'});
+					$scope.showNotification('error', 'Oops. Something went wrong.');
 				}
 			});
 		};
@@ -99,9 +95,9 @@ angular.module('contactManager.controllers', []).
 					$scope.replaceContact(record, db_record);
 
 					var full_name = [db_record.first_name, db_record.last_name].join(' ');
-					$scope.alerts.push({type: 'success', msg: 'The record „' + full_name +	'“ has been successfully created.'});
+					$scope.showNotification('success', 'The record „' + full_name +	'“ has been successfully created.');
 				} else {
-					$scope.alerts.push({type: 'error', msg: 'Oops. Something went wrong'});
+					$scope.showNotification('error', 'Oops. Something went wrong.');
 				}
 			});
 		};
@@ -113,11 +109,11 @@ angular.module('contactManager.controllers', []).
 			$http.delete(recordURI, record).success(function(data){
 				if (data.msg == 'success') {
 					var full_name = [record.first_name, record.last_name].join(' ');
-					$scope.alerts.push({type: 'success', msg: 'The record „' + full_name +	'“ has been successfully removed.'});
+					$scope.showNotification('warning', 'The record „' + full_name +	'“ has been successfully removed.');
 					$scope.removeContact(record);
 					$scope.resetSelection();
 				} else {
-					$scope.alerts.push({type: 'error', msg: 'Oops. Something went wrong'});
+					$scope.showNotification('error', 'Oops. Something went wrong.');
 				}
 			});
 		};
