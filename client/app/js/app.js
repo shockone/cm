@@ -1,9 +1,7 @@
 'use strict';
 
 
-angular.module('contactManager', ['contactManager.filters',
-                                  'contactManager.services',
-                                  'contactManager.directives',
+angular.module('contactManager', ['contactManager.services',
                                   'contactManager.controllers',
                                   'ui.bootstrap',
 																	'ui.utils',

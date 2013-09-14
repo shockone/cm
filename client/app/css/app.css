@@ -41,12 +41,8 @@ input[type="search"] {
 }
 
 .input-group-addon {
-  min-width:130px;
+  min-width:110px;
   text-align:right !important;
-}
-
-.well .well .input-group-addon {
-  min-width:111px;
 }
 
 .form-actions {
