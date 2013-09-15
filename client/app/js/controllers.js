@@ -169,9 +169,11 @@ angular.module('contactManager.controllers', []).
 		};
 
 
-		$scope.updatePhone = function () {
-			var c = $scope.selectedContact;
-			c.phones.default_phone_value = c.phones[c.phones.default_phone];
+		$scope.updatePhone = function (phone) {
+			if (phone !== 'undefined' && thisPhonePresent(phone) && otherPhonesEmpty(phone)) {
+				setPhoneAsDefault(phone);
+			}
+			updatePhoneInGrid();
 		};
 
 
@@ -191,6 +193,40 @@ angular.module('contactManager.controllers', []).
 			}
 			return index;
 		};
+
+
+		var thisPhonePresent = function(phone_type) {
+			return $scope.selectedContact.phones[phone_type].length > 0;
+		};
+
+
+		var otherPhonesEmpty = function(phone_type) {
+			var all_types = ['cell_phone', 'work_phone', 'home_phone'];
+
+			//Remove the type passed in parameters.
+			var index = all_types.indexOf(phone_type);
+			all_types.splice(index, 1);
+
+			for (var i = 0; i != all_types.length; ++i) {
+				if ($scope.selectedContact.phones[all_types[i]].length > 0) {
+					return false;
+				}
+			}
+			return true;
+
+		};
+
+
+		var setPhoneAsDefault = function(phone_type){
+			$scope.selectedContact.phones.default_phone = phone_type;
+		};
+
+
+		var updatePhoneInGrid = function(){
+			var c = $scope.selectedContact;
+			c.phones.default_phone_value = c.phones[c.phones.default_phone];
+		}
+
 	}]).
 
 	controller('SelectionCtrl', ['$scope', 'Utility', function ($scope, Utility) {

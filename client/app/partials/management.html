@@ -78,7 +78,7 @@
             <input type="radio" name="default_phone" value="cell_phone" ng-model="selectedContact.phones.default_phone" ng-click="updatePhone()">
         </label>
       </span>
-      <input type="text" class="form-control" ng-model="selectedContact.phones.cell_phone" ng-change="updatePhone()">
+      <input type="text" class="form-control" ng-model="selectedContact.phones.cell_phone" ng-change="updatePhone('cell_phone')">
     </div>
 
     <br>
@@ -90,7 +90,7 @@
               <input type="radio" name="default_phone" value="home_phone" ng-model="selectedContact.phones.default_phone" ng-click="updatePhone()">
           </label>
       </span>
-      <input type="text" class="form-control" ng-model="selectedContact.phones.home_phone" ng-change="updatePhone()">
+      <input type="text" class="form-control" ng-model="selectedContact.phones.home_phone" ng-change="updatePhone('home_phone')">
     </div>
 
     <br>
@@ -102,7 +102,7 @@
               <input type="radio" name="default_phone" value="work_phone" ng-model="selectedContact.phones.default_phone" ng-click="updatePhone()">
           </label>
       </span>
-      <input type="text" class="form-control" ng-model="selectedContact.phones.work_phone" ng-change="updatePhone()">
+      <input type="text" class="form-control" ng-model="selectedContact.phones.work_phone" ng-change="updatePhone('work_phone')">
     </div>
 
     <br>
