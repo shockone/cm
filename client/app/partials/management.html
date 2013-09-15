@@ -1,7 +1,6 @@
-<div ui-scrollfix class="well" id="edit-form">
+<div class="well" id="edit-form">
 
-  <form class="form-horizontal" role="form" novalidate>
-
+  <form class="form-horizontal" role="form" name="editForm">
     <div class="input-group">
       <span class="input-group-addon">First Name</span>
       <input type="text" class="form-control" placeholder="John" ng-model="selectedContact.first_name">
@@ -18,7 +17,7 @@
 
     <div class="input-group">
       <span class="input-group-addon" >Email</span>
-      <input type="text" class="form-control" placeholder="john@example.com" ng-model="selectedContact.email" required>
+      <input type="email" name="email" class="form-control" placeholder="john@example.com" ng-model="selectedContact.email" required>
     </div>
 
     <br>
@@ -109,12 +108,13 @@
     <br>
 
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary" id="save-button" ng-click="save()">Save</button>
+      <button type="submit" class="btn btn-primary" id="save-button" ng-click="save()" ng-disabled="editForm.email.$invalid">Save</button>
       <button type="submit" class="btn btn-danger" ng-click="delete()">Delete</button>
     </div>
 
   </form>
 </div>
+
 <script type="text/javascript">
     //ScrollFix.
     var editForm = $("#edit-form");
