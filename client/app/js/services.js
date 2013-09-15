@@ -42,10 +42,14 @@ angular.module('contactManager.services', []).
 			},
 
 			formatDate: function(date){
-				var curr_date = date.getDate();
-				var curr_month = date.getMonth() + 1; //Months are zero based
-				var curr_year = date.getFullYear();
-				return curr_year + "-" + curr_month + "-" + curr_date;
+				if(date instanceof Date) {
+					var curr_date = date.getDate();
+					var curr_month = date.getMonth() + 1; //Months are zero based
+					var curr_year = date.getFullYear();
+					return curr_year + "-" + curr_month + "-" + curr_date;
+				} else {
+					return date;
+				}
 			}
 		}
 	})

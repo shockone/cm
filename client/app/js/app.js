@@ -3,8 +3,8 @@
 
 angular.module('contactManager', ['contactManager.services',
 		'contactManager.controllers',
-		'ui.bootstrap',
-		'ui.utils',
+//		'ui.bootstrap',
+//		'ui.utils',
 		'ngGrid',
 		'toaster', '$strap.directives']
 	).

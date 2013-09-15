@@ -147,18 +147,20 @@ angular.module('contactManager.controllers', []).
 
 
 		$scope.delete = function () {
-			var record = $scope.selectedContact;
-			var recordURI = APIServer + '/contacts/' + record._id;
-			$http.delete(recordURI, record).success(function (data) {
-				if (data.msg == 'success') {
-					var full_name = [record.first_name, record.last_name].join(' ');
-					$scope.showNotification('warning', 'The record „' + full_name + '“ has been successfully removed.');
-					removeContact(record);
-					$scope.resetSelection();
-				} else {
-					$scope.showNotification('error', 'Oops. Something went wrong.');
-				}
-			});
+			if(confirm('Are you sure you want to delete this contact?')){
+				var record = $scope.selectedContact;
+				var recordURI = APIServer + '/contacts/' + record._id;
+				$http.delete(recordURI, record).success(function (data) {
+					if (data.msg == 'success') {
+						var full_name = [record.first_name, record.last_name].join(' ');
+						$scope.showNotification('warning', 'The record „' + full_name + '“ has been successfully removed.');
+						removeContact(record);
+						$scope.resetSelection();
+					} else {
+						$scope.showNotification('error', 'Oops. Something went wrong.');
+					}
+				});
+			}
 		};
 
 
