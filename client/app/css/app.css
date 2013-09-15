@@ -82,6 +82,10 @@ input.ng-invalid {
     background-color: rgba(255, 0, 0, 0.17);
 }
 
+#zip {
+    padding-left: 0;
+}
+
 .col-sm-4 .input-group-addon {
     min-width: 0;
 }
