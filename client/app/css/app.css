@@ -85,3 +85,7 @@ input.ng-invalid {
 .col-sm-4 .input-group-addon {
     min-width: 0;
 }
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+    display: none !important;
+}

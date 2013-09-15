@@ -106,7 +106,6 @@ angular.module('contactManager.controllers', []).
 		$scope.save = function () {
 			var record = $scope.selectedContact;
 			record.birth_date = Utility.formatDate(record.birth_date);
-			console.log(record.birth_date);
 
 			if (record._id) {
 				$scope.update(record);
@@ -117,6 +116,7 @@ angular.module('contactManager.controllers', []).
 
 
 		$scope.update = function (record) {
+			record = angular.copy(record);
 			var recordURI = APIServer + '/contacts/' + record._id;
 			delete record._id;
 			$http.put(recordURI, record).success(function (data) {
@@ -170,7 +170,7 @@ angular.module('contactManager.controllers', []).
 		};
 
 
-		/* Private functions*/
+		/* Private functions */
 
 		var removeContact = function (record) {
 			var index = $scope.$parent.contacts.indexOf(record);
