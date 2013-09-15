@@ -10,9 +10,9 @@ angular.module('contactManager.controllers', []).
 			//Get contacts from EC2
 			$http.get(APIServer + '/contacts').success(function (data) {
 				//Choose the default phone number
-				angular.forEach(data, function(value, index){
+				angular.forEach(data, function (value, index) {
 					var p = data[index].phones;
-					p.default_phone_value =	p[p.default_phone || 'cell_phone']
+					p.default_phone_value = p[p.default_phone || 'cell_phone']
 				});
 
 				$scope.contacts = data;
@@ -147,9 +147,12 @@ angular.module('contactManager.controllers', []).
 
 
 		$scope.delete = function () {
-			if(confirm('Are you sure you want to delete this contact?')){
-				var record = $scope.selectedContact;
-				var recordURI = APIServer + '/contacts/' + record._id;
+			if (!confirm('Are you sure you want to delete this contact?')) return;
+
+			var record = $scope.selectedContact;
+			var id = record._id;
+			if (id) {
+				var recordURI = APIServer + '/contacts/' + id;
 				$http.delete(recordURI, record).success(function (data) {
 					if (data.msg == 'success') {
 						var full_name = [record.first_name, record.last_name].join(' ');
@@ -160,11 +163,13 @@ angular.module('contactManager.controllers', []).
 						$scope.showNotification('error', 'Oops. Something went wrong.');
 					}
 				});
+			} else { // A newly created contact, just remove from the array
+				removeContact(record);
 			}
 		};
 
 
-		$scope.updatePhone = function() {
+		$scope.updatePhone = function () {
 			var c = $scope.selectedContact;
 			c.phones.default_phone_value = c.phones[c.phones.default_phone];
 		};
