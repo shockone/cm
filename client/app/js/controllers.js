@@ -187,9 +187,9 @@ angular.module('contactManager.controllers', []).
 
 
 		var replaceContact = function (record, replacement) {
-			var index = $scope.$parent.contacts.indexOf(record);
+			var index = $scope.contacts.indexOf(record);
 			if (index !== -1) {
-				$scope.$parent.contacts[index] = replacement;
+				$scope.contacts[index]._id = replacement._id;
 			}
 			return index;
 		};
