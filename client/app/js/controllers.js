@@ -170,7 +170,7 @@ angular.module('contactManager.controllers', []).
 
 
 		$scope.updatePhone = function (phone) {
-			if (phone !== 'undefined' && thisPhonePresent(phone) && otherPhonesEmpty(phone)) {
+			if (typeof phone != 'undefined' && thisPhonePresent(phone) && otherPhonesEmpty(phone)) {
 				setPhoneAsDefault(phone);
 			}
 			updatePhoneInGrid();

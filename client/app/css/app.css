@@ -14,7 +14,6 @@ nav {
 }
 
 #add-button {
-
     margin-right: 20px;
 }
 
@@ -92,4 +91,8 @@ input.ng-invalid {
 
 [ng\:cloak], [ng-cloak], .ng-cloak {
     display: none !important;
+}
+
+#toast-container {
+    pointer-events: none;
 }

@@ -73,7 +73,7 @@
 }
 .toast {
   background-color: #030303;
-  z-index: 999999;
+  z-index: 2;
 }
 .toast-success {
   background-color: #51a351;
