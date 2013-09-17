@@ -1,4 +1,4 @@
-<div class="well" id="edit-form">
+<div class="well" id="edit-form" scroll-fix>
   <form class="form-horizontal" role="form" name="editForm">
     <div class="input-group">
       <span class="input-group-addon">First Name</span>
@@ -113,17 +113,3 @@
 
   </form>
 </div>
-
-<script type="text/javascript">
-    //ScrollFix.
-    var editForm = $("#edit-form");
-    var viewPort = $(window);
-    viewPort.scroll(function(){
-        if ( viewPort.height() >= editForm.height()){
-            var topOffset = Math.max(0,77-$(this).scrollTop());
-            editForm.css('position', 'fixed').css('right', 0).css("top", topOffset);
-        } else {
-            editForm.css('position', 'static');
-        }
-    });
-</script>
