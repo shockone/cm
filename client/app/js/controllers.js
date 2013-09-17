@@ -48,8 +48,11 @@ angular.module('contactManager.controllers', []).
 				$scope.contactsGridOptions.filterOptions.filterText = searchQuery;
 			});
 
-			$scope.emails = '';
+			// A workaround. Define it as an object, because strings are assigned by value and therefore it would be
+			// redefined in the child controller.
+			$scope.emails = { model: '' };
 			var manual_emails = [];
+
 			$scope.contactsGridOptions.beforeSelectionChange = function () {
 				manual_emails = Utility.manuallyEnteredEmails($scope);
 				return true;
@@ -58,7 +61,7 @@ angular.module('contactManager.controllers', []).
 			$scope.contactsGridOptions.afterSelectionChange = function () {
 				$scope.selectedContact = $scope.selectedContacts[0];
 				var selected_emails = Utility.selectedEmails($scope);
-				$scope.emails = selected_emails.concat(manual_emails).join(', ');
+				$scope.emails.model = selected_emails.concat(manual_emails).join(', ');
 			};
 
 

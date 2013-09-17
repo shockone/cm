@@ -11,7 +11,12 @@ angular.module('contactManager.services', []).
 		return {
 
 			allEmails: function (scope) {
-				return scope.emails.split(/,\s*/);
+				// Either comma or space separated
+				var emailsArray = scope.emails.model.split(/(,\s*|,?\s+)/);
+				// Remove empty elements
+				emailsArray = emailsArray.filter(function(n){return n.match(/\w+/);});
+
+				return emailsArray;
 			},
 
 			selectedEmails: function (scope) {
