@@ -1,53 +1,53 @@
 'use strict';
 
-/* Services */
-
-
-// Demonstrate how to register services
-// In this case it is a simple value service.
 angular.module('contactManager.services', []).
 	constant('APIServer', 'http://ec2-54-226-4-45.compute-1.amazonaws.com').
 	factory('Utility', function () {
 		return {
-
-			allEmails: function (scope) {
+			allAddresseeEmails: function (scope) {
 				// Either comma or space separated
 				var emailsArray = scope.emails.model.split(/(,\s*|,?\s+)/);
 				// Remove empty elements
-				emailsArray = emailsArray.filter(function(n){return n.match(/\w+/);});
-
-				return emailsArray;
+				return emailsArray.filter(function(n){return n.match(/\w+/);});
 			},
 
-			selectedEmails: function (scope) {
+
+			manuallyEnteredAddresseeEmails: function (scope) {
+				var allAddresseeEmails = this.allAddresseeEmails(scope);
+				var selectedEmails = this.selectedFromListAddresseeEmails(scope);
+
+				return this.arrayDifference(selectedEmails, allAddresseeEmails);
+			},
+
+
+			notSavedEmails: function(scope) {
+				var allAddresseeEmails = this.allAddresseeEmails(scope);
+				//Exclude emails, that already exist in our DB.
+				return this.inFirstButNotInSecond(allAddresseeEmails, this.emailsFromDB(scope));
+			},
+
+
+			//Emails that are already in the contact manager. Including the ones, which weren't yet POSTed to the server.
+			emailsFromDB: function (scope) {
+				return this.mapContactsToEmails(scope.contacts);
+			},
+
+
+			selectedFromListAddresseeEmails: function (scope) {
+				return this.mapContactsToEmails(scope.selectedContacts);
+			},
+
+
+			mapContactsToEmails: function (contacts) {
 				var emails = [];
-				angular.forEach(scope.selectedContacts, function (data, index) {
-					emails.push(data.email);
+				angular.forEach(contacts, function (contact, index) {
+					emails.push(contact.email);
 				});
 				return emails;
 			},
 
-			manuallyEnteredEmails: function (scope) {
-				var allEmails = this.allEmails(scope);
-				var selectedEmails = this.selectedEmails(scope);
 
-				return this.arrayDifference(selectedEmails, allEmails);
-			},
-
-			notSavedEmails: function(scope) {
-				var notSaved = this.manuallyEnteredEmails(scope);
-				return this.inFirstButNotInSecond(notSaved, this.emailsFromDB(scope));
-			},
-
-			emailsFromDB: function (scope) {
-				var emails = [];
-				for (var i = 0; i != scope.contacts.length; i++) {
-					emails.push(scope.contacts[i].email);
-				}
-				return emails;
-			},
-
-			// XOR
+			// Works like XOR.
 			arrayDifference: function (a1, a2) {
 				var a = [], diff = [];
 				for (var i = 0; i < a1.length; i++)
@@ -60,17 +60,11 @@ angular.module('contactManager.services', []).
 				return diff;
 			},
 
+
 			inFirstButNotInSecond: function(firstArray, secondArray) {
-				var result = [];
-				console.log(firstArray);
-				console.log(secondArray);
-				for (var i = 0; i != firstArray.length; i++) {
-					if (secondArray.indexOf(firstArray[i]) == -1) {
-						result.push(firstArray[i]);
-					}
-				}
-				return result;
+				return firstArray.filter(function(e){return secondArray.indexOf(e) == -1;});
 			},
+
 
 			formatDate: function(date){
 				if(date instanceof Date) {
@@ -84,6 +78,8 @@ angular.module('contactManager.services', []).
 			}
 		}
 	})
+
+	//Make an element stick to the top of the page while scrolling except when it's higher than viewport.
 	.directive('scrollFix', ['$window', function ($window) {
 		return {
 			link: function (scope, elm, attrs) {
