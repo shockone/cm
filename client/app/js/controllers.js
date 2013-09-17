@@ -51,17 +51,17 @@ angular.module('contactManager.controllers', []).
 			// A workaround. Define it as an object, because strings are assigned by value and therefore it would be
 			// redefined in the child controller.
 			$scope.emails = { model: '' };
-			var manual_emails = [];
+			$scope.manual_emails = [];
 
 			$scope.contactsGridOptions.beforeSelectionChange = function () {
-				manual_emails = Utility.manuallyEnteredEmails($scope);
+				$scope.manual_emails = Utility.manuallyEnteredEmails($scope);
 				return true;
 			};
 
 			$scope.contactsGridOptions.afterSelectionChange = function () {
 				$scope.selectedContact = $scope.selectedContacts[0];
 				var selected_emails = Utility.selectedEmails($scope);
-				$scope.emails.model = selected_emails.concat(manual_emails).join(', ');
+				$scope.emails.model = selected_emails.concat($scope.manual_emails).join(', ');
 			};
 
 
@@ -84,14 +84,7 @@ angular.module('contactManager.controllers', []).
 
 			$scope.add = function () {
 				$location.path('management');
-				var emptyContact = {
-					"first_name": '',
-					"last_name": '',
-					"email": '',
-					"birth_date": '',
-					"address": {country: '', state: '', city: '', zip: '', address: ''},
-					"phones": {cell_phone: '', work_phone: '', home_phone: ''}
-				};
+				var emptyContact = $scope.createEmptyContact();
 				var e = $scope.$on('ngGridEventData', function () {
 					$scope.contactsGridOptions.selectItem(0, true);
 					e();
@@ -99,7 +92,52 @@ angular.module('contactManager.controllers', []).
 				});
 
 				$scope.contacts.unshift(emptyContact);
+				return emptyContact;
 			};
+
+
+			$scope.create = function (record) {
+				var recordURI = APIServer + '/contacts/';
+				$http.post(recordURI, record).success(function (data, status) {
+					if (status == 200) {
+						var db_record = data[0];
+						$scope.replaceContact(record, db_record);
+
+						var full_name = [db_record.first_name, db_record.last_name].join(' ');
+						$scope.showNotification('success', 'The record „' + full_name + '“ has been successfully created.');
+					} else {
+						$scope.showNotification('error', 'Oops. Something went wrong.');
+					}
+				});
+			};
+
+
+			$scope.createEmptyContact = function() {
+				return {"first_name": '',
+						"last_name": '',
+						"email": '',
+						"birth_date": '',
+						"address": {country: '', state: '', city: '', zip: '', address: ''},
+						"phones": {cell_phone: '', work_phone: '', home_phone: '', default_phone: 'cell_phone'}
+						};
+			};
+
+
+			$scope.removeContact = function (record) {
+				var index = $scope.contacts.indexOf(record);
+				$scope.contacts.splice(index, 1);
+				return index;
+			};
+
+
+			$scope.replaceContact = function (record, replacement) {
+				var index = $scope.contacts.indexOf(record);
+				if (index !== -1) {
+					$scope.contacts[index]._id = replacement._id;
+				}
+				return index;
+			};
+
 		}]).
 
 	controller('ManagementCtrl', ['$scope', '$http', 'APIServer', 'Utility', function ($scope, $http, APIServer, Utility) {
@@ -133,22 +171,6 @@ angular.module('contactManager.controllers', []).
 		};
 
 
-		$scope.create = function (record) {
-			var recordURI = APIServer + '/contacts/';
-			$http.post(recordURI, record).success(function (data, status) {
-				if (status == 200) {
-					var db_record = data[0];
-					replaceContact(record, db_record);
-
-					var full_name = [db_record.first_name, db_record.last_name].join(' ');
-					$scope.showNotification('success', 'The record „' + full_name + '“ has been successfully created.');
-				} else {
-					$scope.showNotification('error', 'Oops. Something went wrong.');
-				}
-			});
-		};
-
-
 		$scope.delete = function () {
 			if (!confirm('Are you sure you want to delete this contact?')) return;
 
@@ -160,14 +182,14 @@ angular.module('contactManager.controllers', []).
 					if (data.msg == 'success') {
 						var full_name = [record.first_name, record.last_name].join(' ');
 						$scope.showNotification('warning', 'The record „' + full_name + '“ has been successfully removed.');
-						removeContact(record);
+						$scope.removeContact(record);
 						$scope.resetSelection();
 					} else {
 						$scope.showNotification('error', 'Oops. Something went wrong.');
 					}
 				});
 			} else { // A newly created contact, just remove from the array
-				removeContact(record);
+				$scope.removeContact(record);
 			}
 		};
 
@@ -181,21 +203,6 @@ angular.module('contactManager.controllers', []).
 
 
 		/* Private functions */
-
-		var removeContact = function (record) {
-			var index = $scope.$parent.contacts.indexOf(record);
-			$scope.$parent.contacts.splice(index, 1);
-			return index;
-		};
-
-
-		var replaceContact = function (record, replacement) {
-			var index = $scope.contacts.indexOf(record);
-			if (index !== -1) {
-				$scope.contacts[index]._id = replacement._id;
-			}
-			return index;
-		};
 
 
 		var thisPhonePresent = function(phone_type) {
@@ -239,9 +246,33 @@ angular.module('contactManager.controllers', []).
 			var mailWindow = window.open('mailto:' + encodeURIComponent(Utility.allEmails($scope)) +
 				'?subject=' + encodeURIComponent($scope.subject) +
 				'&body=' + encodeURIComponent($scope.body));
-			setTimeout(function () {
-				mailWindow.close();
-			}, 1000);
 
+			setTimeout(function () { mailWindow.close(); }, 1000);
+
+			saveNonExistingContacts();
+		};
+
+
+		var saveNonExistingContacts = function() {
+			var emails = Utility.notSavedEmails($scope);
+			if (emails.length) {
+				var emailsList = '\n\n' + emails.join('\n');
+
+				if (confirm('Some of the emails don\'t exists in the contact manager.' +
+					' Would you like to save them?' + emailsList)) {
+
+					// Save contacts and POST them to the server.
+					angular.forEach(emails, function (email, index) {
+						var newContact = $scope.add();
+						var firstName = email.substring(0, email.indexOf('@'));
+
+						newContact.email        = email;
+						newContact.first_name   = firstName;
+
+						$scope.create(newContact);
+					});
+				}
+			}
 		}
+
 	}]);

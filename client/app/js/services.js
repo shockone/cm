@@ -34,6 +34,20 @@ angular.module('contactManager.services', []).
 				return this.arrayDifference(selectedEmails, allEmails);
 			},
 
+			notSavedEmails: function(scope) {
+				var notSaved = this.manuallyEnteredEmails(scope);
+				return this.inFirstButNotInSecond(notSaved, this.emailsFromDB(scope));
+			},
+
+			emailsFromDB: function (scope) {
+				var emails = [];
+				for (var i = 0; i != scope.contacts.length; i++) {
+					emails.push(scope.contacts[i].email);
+				}
+				return emails;
+			},
+
+			// XOR
 			arrayDifference: function (a1, a2) {
 				var a = [], diff = [];
 				for (var i = 0; i < a1.length; i++)
@@ -44,6 +58,18 @@ angular.module('contactManager.services', []).
 				for (var k in a)
 					diff.push(k);
 				return diff;
+			},
+
+			inFirstButNotInSecond: function(firstArray, secondArray) {
+				var result = [];
+				console.log(firstArray);
+				console.log(secondArray);
+				for (var i = 0; i != firstArray.length; i++) {
+					if (secondArray.indexOf(firstArray[i]) == -1) {
+						result.push(firstArray[i]);
+					}
+				}
+				return result;
 			},
 
 			formatDate: function(date){
