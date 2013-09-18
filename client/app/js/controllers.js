@@ -20,7 +20,7 @@ angular.module('contactManager.controllers', []).
 
 					$scope.contacts = data;
 				}).
-				error(function(data, status, headers, config) {
+				error(function(data, status) {
 					$scope.showNotification('error', 'Can\'t receive data from the server. Error status ' + status);
 				});
 
@@ -110,7 +110,6 @@ angular.module('contactManager.controllers', []).
 
 			$scope.save = function () {
 				var record = $scope.selectedContact;
-				record.birth_date = Utility.formatDate(record.birth_date);
 
 				if (record._id) {
 					$scope.update(record);
@@ -265,6 +264,19 @@ angular.module('contactManager.controllers', []).
 			c.phones.default_phone_value = c.phones[c.phones.default_phone];
 		};
 
+
+		// Setup datapicker plugin to select birth dates more conveniently.
+		$('#birth-date').datepicker({
+			format: 'yyyy-mm-dd',
+			autoclose: true,
+			startView: 'decade',
+			endDate: new Date(),
+			forceParse: false
+		})
+		.on('changeDate', function() {
+			$scope.selectedContact.birth_date = Utility.formatDate($scope.selectedContact.birth_date);
+		});
+
 	}]).
 
 
@@ -293,7 +305,7 @@ angular.module('contactManager.controllers', []).
 					' Would you like to save them?' + emailsList)) {
 
 					// Save contacts and POST them to the server.
-					angular.forEach(emails, function (email, index) {
+					angular.forEach(emails, function (email) {
 						var newContact = $scope.add();
 						var firstName = email.substring(0, email.indexOf('@'));
 

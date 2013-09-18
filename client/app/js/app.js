@@ -4,16 +4,8 @@ angular.module('contactManager', [
 		'contactManager.services',
 		'contactManager.controllers',
 		'ngGrid',
-		'toaster',
-		'$strap.directives']
+		'toaster']
 	).
-	value('$strapConfig', {
-		datepicker: {
-			format: 'yyyy-mm-dd',
-			autoclose: true,
-			startView: 'decade'
-		}
-	}).
 	config(['$routeProvider', function ($routeProvider) {
 		$routeProvider.
 			when('/management', {
