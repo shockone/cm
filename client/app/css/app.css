@@ -2,15 +2,10 @@ body {
     padding-top: 5px;
     width: 100%;
     float: left;
-
 }
 
 nav {
-    margin-left: 5px;
-}
-
-.nav {
-    display: inline-block;
+    margin: 0 5px;
 }
 
 #add-button {
@@ -18,8 +13,8 @@ nav {
 }
 
 #save-button {
-    width: 60%;
-    margin-right: 10px;
+    width: 50%;
+    margin-right: 20px;
 }
 
 
@@ -41,18 +36,6 @@ nav {
     top: 0;
 }
 
-.form-wrapper {
-    position: relative;
-}
-
-#email-form input {
-    width: 100%;
-}
-
-#email-form textarea {
-    width: 100%;
-}
-
 .input-group-addon {
     min-width: 125px;
     text-align: right !important;
@@ -66,10 +49,6 @@ nav {
 
 textarea {
     resize: vertical;
-}
-
-.nav.nav-tabs {
-    border: none;
 }
 
 .input-group-addon label {
@@ -89,10 +68,15 @@ input.ng-invalid {
     min-width: 0;
 }
 
+/* Hide containers until data is ready*/
 [ng\:cloak], [ng-cloak], .ng-cloak {
     display: none !important;
 }
 
 #toast-container {
     pointer-events: none;
+}
+
+.toast {
+    pointer-events: auto;
 }
