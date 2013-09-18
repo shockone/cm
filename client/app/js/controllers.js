@@ -102,7 +102,11 @@ angular.module('contactManager.controllers', []).
 
 				var emptyContact = $scope.createEmptyContact();
 				$scope.contacts.unshift(emptyContact);
-				document.getElementById('first-name').focus();
+
+				var firstNameInput = document.getElementById('first-name');
+				if (firstNameInput) {
+					firstNameInput.focus();
+				}
 
 				return emptyContact;
 			};
@@ -119,7 +123,7 @@ angular.module('contactManager.controllers', []).
 			};
 
 
-			$scope.remove = function() {
+			$scope.destroy = function() {
 				if (!confirm('Are you sure you want to delete this contact?')) { return; }
 				var record = $scope.selectedContact;
 
@@ -204,6 +208,7 @@ angular.module('contactManager.controllers', []).
 			$scope.removeContactFromArray = function (record) {
 				var index = $scope.contacts.indexOf(record);
 				$scope.contacts.splice(index, 1);
+				$scope.selectFirstElement();
 				return index;
 			};
 
@@ -284,10 +289,13 @@ angular.module('contactManager.controllers', []).
 		$scope.$parent.multiSelect = true;
 
 		$scope.sendMail = function () {
+			var subject = $scope.subject ? encodeURIComponent($scope.subject) : '';
+			var body = $scope.body ? encodeURIComponent($scope.body) : '';
+
 			// Open the email in client's default mail application.
 			var mailWindow = window.open('mailto:' + encodeURIComponent(Utility.allAddresseeEmails($scope)) +
-				'?subject=' + encodeURIComponent($scope.subject) +
-				'&body=' + encodeURIComponent($scope.body));
+				'?subject=' + subject +	'&body=' + body);
+
 			// Close the tab created by the previous statement.
 			setTimeout(function () { mailWindow.close(); }, 0);
 
