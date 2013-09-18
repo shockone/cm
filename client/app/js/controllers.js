@@ -1,22 +1,28 @@
 'use strict';
 
-/* Controllers */
 
 angular.module('contactManager.controllers', []).
 
 	controller('MainCtrl', ['$scope', '$route', '$location', '$http', 'APIServer', 'toaster', 'Utility',
 		function ($scope, $route, $location, $http, APIServer, toaster, Utility) {
+			$scope.$route = $route;
 
-			//Get contacts from EC2
-			$http.get(APIServer + '/contacts').success(function (data) {
-				//Choose the default phone number
-				angular.forEach(data, function (value, index) {
-					var p = data[index].phones;
-					p.default_phone_value = p[p.default_phone || 'cell_phone']
+
+			// Get contacts from the server.
+			$http.get(APIServer + '/contacts').
+				success(function (data) {
+					// Create a separate attribute for the phone, which was chosen as default, because
+					// there is no way to use a dynamic value in columnDefs for ng-grid.
+					angular.forEach(data, function (value, index) {
+						var phones = data[index].phones;
+						phones.default_phone_value = phones[phones.default_phone || 'cell_phone'];
+					});
+
+					$scope.contacts = data;
+				}).
+				error(function(data, status, headers, config) {
+					$scope.showNotification('error', 'Can\'t receive data from the server. Error status ' + status);
 				});
-
-				$scope.contacts = data;
-			});
 
 
 			//Setup the grid
@@ -39,25 +45,29 @@ angular.module('contactManager.controllers', []).
 				filterOptions: {
 					filterText: '',
 					useExternalFilter: false
-				}};
+				}
+			};
 
 
-			$scope.$route = $route;
-
+			// Search
 			$scope.$watch('searchQuery', function (searchQuery) {
 				$scope.contactsGridOptions.filterOptions.filterText = searchQuery;
 			});
 
-			// A workaround. Define it as an object, because strings are assigned by value and therefore it would be
-			// redefined in the child controller.
+
+			// A workaround. Define emails as an object, because we need to use it in the child controller.
+			// And since primitives are assigned by value, it would be redefined instead of setting to the prototype.
 			$scope.emails = { model: '' };
 			$scope.manual_emails = [];
 
+
+			// Remember manually typed emails so we won't lose them after selection changed.
 			$scope.contactsGridOptions.beforeSelectionChange = function () {
 				$scope.manual_emails = Utility.manuallyEnteredAddresseeEmails($scope);
 				return true;
 			};
 
+			// Merge new selection with manually typed emails.
 			$scope.contactsGridOptions.afterSelectionChange = function () {
 				$scope.selectedContact = $scope.selectedContacts[0];
 				var selected_emails = Utility.selectedFromListAddresseeEmails($scope);
@@ -69,47 +79,115 @@ angular.module('contactManager.controllers', []).
 				toaster.pop(type, '', text);
 			};
 
-
-			$scope.resetSelection = function () {
-				//Deselect all items but select the first one on data loaded event
+			//Deselect all items but select the first one on data loaded event
+			$scope.selectFirstElement = function () {
 				$scope.contactsGridOptions.selectAll(false);
 				$scope.contactsGridOptions.selectRow(0, true);
 
-				var e = $scope.$on('ngGridEventData', function () {
+				var unregisterListener = $scope.$on('ngGridEventData', function () {
 					$scope.contactsGridOptions.selectRow(0, true);
-					e();
+					unregisterListener();
 				});
 			};
 
 
+
+			/* REST Actions */
+
+
 			$scope.add = function () {
 				$location.path('management');
-				var emptyContact = $scope.createEmptyContact();
-				var e = $scope.$on('ngGridEventData', function () {
-					$scope.contactsGridOptions.selectItem(0, true);
-					e();
-					window.scrollTo(0, 0);
-				});
+				$scope.selectFirstElement();
+				window.scrollTo(0, 0);
 
+				var emptyContact = $scope.createEmptyContact();
 				$scope.contacts.unshift(emptyContact);
+
 				return emptyContact;
+			};
+
+
+			$scope.save = function () {
+				var record = $scope.selectedContact;
+				record.birth_date = Utility.formatDate(record.birth_date);
+
+				if (record._id) {
+					$scope.update(record);
+				} else {
+					$scope.create(record);
+				}
+			};
+
+
+			$scope.remove = function() {
+				if (!confirm('Are you sure you want to delete this contact?')) { return; }
+				var record = $scope.selectedContact;
+
+				if (record._id) {
+					$scope.delete(record);
+				} else {
+					$scope.removeContactFromArray(record); // A newly created contact, just remove from the array
+				}
 			};
 
 
 			$scope.create = function (record) {
 				var recordURI = APIServer + '/contacts/';
-				$http.post(recordURI, record).success(function (data, status) {
-					if (status == 200) {
-						var db_record = data[0];
-						$scope.replaceContact(record, db_record);
+				$http.post(recordURI, record).
+					success(function (data, status) {
+						if (status === 200) {
+							var db_record = data[0];
+							$scope.setID(record, db_record._id);
 
-						var full_name = [db_record.first_name, db_record.last_name].join(' ');
-						$scope.showNotification('success', 'The record „' + full_name + '“ has been successfully created.');
-					} else {
+							var full_name = [db_record.first_name, db_record.last_name].join(' ');
+							$scope.showNotification('success', 'The record „' + full_name + '“ has been successfully created.');
+						} else {
+							$scope.showNotification('error', 'Oops. Something went wrong.');
+						}
+					}).
+					error(function() {
 						$scope.showNotification('error', 'Oops. Something went wrong.');
-					}
-				});
+					});
 			};
+
+
+			$scope.update = function (record) {
+				record = angular.copy(record);
+				var recordURI = APIServer + '/contacts/' + record._id;
+				delete record._id;
+				$http.put(recordURI, record).
+					success(function (data) {
+						if (data.msg === 'success') {
+							var full_name = [record.first_name, record.last_name].join(' ');
+							$scope.showNotification('success', 'The record „' + full_name + '“ has been successfully updated.');
+						} else {
+							$scope.showNotification('error', 'Oops. Something went wrong.');
+						}
+					}).
+					error(function() {
+						$scope.showNotification('error', 'Oops. Something went wrong.');
+					});
+			};
+
+
+			$scope.delete = function (record) {
+				var recordURI = APIServer + '/contacts/' + record._id;
+				$http.delete(recordURI, record).
+					success(function (data) {
+						if (data.msg === 'success') {
+							var full_name = [record.first_name, record.last_name].join(' ');
+							$scope.showNotification('warning', 'The record „' + full_name + '“ has been successfully removed.');
+							$scope.removeContactFromArray(record);
+							$scope.selectFirstElement();
+						} else {
+							$scope.showNotification('error', 'Oops. Something went wrong.');
+						}
+					}).
+					error(function() {
+						$scope.showNotification('error', 'Oops. Something went wrong.');
+					});
+			};
+
 
 
 			$scope.createEmptyContact = function() {
@@ -123,86 +201,35 @@ angular.module('contactManager.controllers', []).
 			};
 
 
-			$scope.removeContact = function (record) {
+			$scope.removeContactFromArray = function (record) {
 				var index = $scope.contacts.indexOf(record);
 				$scope.contacts.splice(index, 1);
 				return index;
 			};
 
 
-			$scope.replaceContact = function (record, replacement) {
+			$scope.setID = function (record, id) {
 				var index = $scope.contacts.indexOf(record);
 				if (index !== -1) {
-					$scope.contacts[index]._id = replacement._id;
+					$scope.contacts[index]._id = id;
 				}
 				return index;
 			};
 
 		}]).
 
+
 	controller('ManagementCtrl', ['$scope', '$http', 'APIServer', 'Utility', function ($scope, $http, APIServer, Utility) {
 		$scope.$parent.multiSelect = false;
-		$scope.resetSelection();
-
-		$scope.save = function () {
-			var record = $scope.selectedContact;
-			record.birth_date = Utility.formatDate(record.birth_date);
-
-			if (record._id) {
-				$scope.update(record);
-			} else {
-				$scope.create(record);
-			}
-		};
+		$scope.selectFirstElement();
 
 
-		$scope.update = function (record) {
-			record = angular.copy(record);
-			var recordURI = APIServer + '/contacts/' + record._id;
-			delete record._id;
-			$http.put(recordURI, record).success(function (data) {
-				if (data.msg == 'success') {
-					var full_name = [record.first_name, record.last_name].join(' ');
-					$scope.showNotification('success', 'The record „' + full_name + '“ has been successfully updated.');
-				} else {
-					$scope.showNotification('error', 'Oops. Something went wrong.');
-				}
-			});
-		};
-
-
-		$scope.delete = function () {
-			if (!confirm('Are you sure you want to delete this contact?')) return;
-
-			var record = $scope.selectedContact;
-			var id = record._id;
-			if (id) {
-				var recordURI = APIServer + '/contacts/' + id;
-				$http.delete(recordURI, record).success(function (data) {
-					if (data.msg == 'success') {
-						var full_name = [record.first_name, record.last_name].join(' ');
-						$scope.showNotification('warning', 'The record „' + full_name + '“ has been successfully removed.');
-						$scope.removeContact(record);
-						$scope.resetSelection();
-					} else {
-						$scope.showNotification('error', 'Oops. Something went wrong.');
-					}
-				});
-			} else { // A newly created contact, just remove from the array
-				$scope.removeContact(record);
-			}
-		};
-
-
-		$scope.updatePhone = function (phone) {
-			if (typeof phone != 'undefined' && thisPhonePresent(phone) && otherPhonesEmpty(phone)) {
+		$scope.updateDefaultPhone = function (phone) {
+			if (typeof phone !== 'undefined' && thisPhonePresent(phone) && otherPhonesEmpty(phone)) {
 				setPhoneAsDefault(phone);
 			}
 			updatePhoneInGrid();
 		};
-
-
-		/* Private functions */
 
 
 		var thisPhonePresent = function(phone_type) {
@@ -217,7 +244,7 @@ angular.module('contactManager.controllers', []).
 			var index = all_types.indexOf(phone_type);
 			all_types.splice(index, 1);
 
-			for (var i = 0; i != all_types.length; ++i) {
+			for (var i = 0; i !== all_types.length; ++i) {
 				if ($scope.selectedContact.phones[all_types[i]].length > 0) {
 					return false;
 				}
@@ -235,19 +262,21 @@ angular.module('contactManager.controllers', []).
 		var updatePhoneInGrid = function(){
 			var c = $scope.selectedContact;
 			c.phones.default_phone_value = c.phones[c.phones.default_phone];
-		}
+		};
 
 	}]).
+
 
 	controller('SelectionCtrl', ['$scope', 'Utility', function ($scope, Utility) {
 		$scope.$parent.multiSelect = true;
 
 		$scope.sendMail = function () {
+			// Open the email in client's default mail application.
 			var mailWindow = window.open('mailto:' + encodeURIComponent(Utility.allAddresseeEmails($scope)) +
 				'?subject=' + encodeURIComponent($scope.subject) +
 				'&body=' + encodeURIComponent($scope.body));
-
-			setTimeout(function () { mailWindow.close(); }, 1000);
+			// Close the tab created by the previous statement.
+			setTimeout(function () { mailWindow.close(); }, 0);
 
 			saveNonExistingContacts();
 		};
@@ -255,6 +284,7 @@ angular.module('contactManager.controllers', []).
 
 		var saveNonExistingContacts = function() {
 			var emails = Utility.notSavedEmails($scope);
+
 			if (emails.length) {
 				var emailsList = '\n\n' + emails.join('\n');
 
@@ -273,6 +303,6 @@ angular.module('contactManager.controllers', []).
 					});
 				}
 			}
-		}
+		};
 
 	}]);

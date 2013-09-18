@@ -1,7 +1,7 @@
 <div class="well" id="edit-form" scroll-fix>
   <form class="form-horizontal" role="form" name="editForm">
     <div class="input-group">
-      <span class="input-group-addon">First Name</span>
+      <span class="input-group-addon" id="first-name">First Name</span>
       <input type="text" class="form-control" placeholder="John" ng-model="selectedContact.first_name">
     </div>
 
@@ -74,10 +74,10 @@
       <span class="input-group-addon">
         <label>
             Cell phone
-            <input type="radio" name="default_phone" value="cell_phone" ng-model="selectedContact.phones.default_phone" ng-click="updatePhone()">
+            <input type="radio" name="default_phone" value="cell_phone" ng-model="selectedContact.phones.default_phone" ng-click="updateDefaultPhone()">
         </label>
       </span>
-      <input type="text" class="form-control" ng-model="selectedContact.phones.cell_phone" ng-change="updatePhone('cell_phone')">
+      <input type="text" class="form-control" ng-model="selectedContact.phones.cell_phone" ng-change="updateDefaultPhone('cell_phone')">
     </div>
 
     <br>
@@ -86,10 +86,10 @@
       <span class="input-group-addon">
           <label>
               Home phone
-              <input type="radio" name="default_phone" value="home_phone" ng-model="selectedContact.phones.default_phone" ng-click="updatePhone()">
+              <input type="radio" name="default_phone" value="home_phone" ng-model="selectedContact.phones.default_phone" ng-click="updateDefaultPhone()">
           </label>
       </span>
-      <input type="text" class="form-control" ng-model="selectedContact.phones.home_phone" ng-change="updatePhone('home_phone')">
+      <input type="text" class="form-control" ng-model="selectedContact.phones.home_phone" ng-change="updateDefaultPhone('home_phone')">
     </div>
 
     <br>
@@ -98,10 +98,10 @@
       <span class="input-group-addon">
           <label>
               Work phone
-              <input type="radio" name="default_phone" value="work_phone" ng-model="selectedContact.phones.default_phone" ng-click="updatePhone()">
+              <input type="radio" name="default_phone" value="work_phone" ng-model="selectedContact.phones.default_phone" ng-click="updateDefaultPhone()">
           </label>
       </span>
-      <input type="text" class="form-control" ng-model="selectedContact.phones.work_phone" ng-change="updatePhone('work_phone')">
+      <input type="text" class="form-control" ng-model="selectedContact.phones.work_phone" ng-change="updateDefaultPhone('work_phone')">
     </div>
 
     <br>

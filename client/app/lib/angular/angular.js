@@ -12843,7 +12843,7 @@ var ngCloakDirective = ngDirective({
            this.contacts.push({type:'email', value:'yourname@example.org'});
           };
 
-          $scope.removeContact = function(contactToRemove) {
+          $scope.removeContactFromArray = function(contactToRemove) {
            var index = this.contacts.indexOf(contactToRemove);
            this.contacts.splice(index, 1);
           };
@@ -12866,7 +12866,7 @@ var ngCloakDirective = ngDirective({
             </select>
             <input type="text" ng-model="contact.value"/>
             [ <a href="" ng-click="clearContact(contact)">clear</a>
-            | <a href="" ng-click="removeContact(contact)">X</a> ]
+            | <a href="" ng-click="removeContactFromArray(contact)">X</a> ]
           </li>
           <li>[ <a href="" ng-click="addContact()">add</a> ]</li>
        </ul>
