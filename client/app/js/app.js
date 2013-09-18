@@ -4,6 +4,7 @@ angular.module('contactManager', [
 		'contactManager.services',
 		'contactManager.controllers',
 		'ngGrid',
+		'ngResource',
 		'toaster']
 	).
 	config(['$routeProvider', function ($routeProvider) {

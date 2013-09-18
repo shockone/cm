@@ -3,8 +3,8 @@
 
 angular.module('contactManager.controllers', []).
 
-	controller('MainCtrl', ['$scope', '$route', '$location', '$http', 'APIServer', 'toaster', 'Utility',
-		function ($scope, $route, $location, $http, APIServer, toaster, Utility) {
+	controller('MainCtrl', ['$scope', '$route', '$location', '$http', '$resource', 'APIServer', 'toaster', 'Utility',
+		function ($scope, $route, $location, $http, $resource, APIServer, toaster, Utility) {
 			$scope.$route = $route;
 
 
@@ -49,12 +49,6 @@ angular.module('contactManager.controllers', []).
 			};
 
 
-			// Search
-			$scope.$watch('searchQuery', function (searchQuery) {
-				$scope.contactsGridOptions.filterOptions.filterText = searchQuery;
-			});
-
-
 			// A workaround. Define emails as an object, because we need to use it in the child controller.
 			// And since primitives are assigned by value, it would be redefined instead of setting to the prototype.
 			$scope.emails = { model: '' };
@@ -92,17 +86,25 @@ angular.module('contactManager.controllers', []).
 
 
 
-			/* REST Actions */
+			/* SCRUD Actions */
+
+			// Search
+			$scope.$watch('searchQuery', function (searchQuery) {
+				$scope.contactsGridOptions.filterOptions.filterText = searchQuery;
+			});
 
 
 			$scope.add = function () {
+				//Redirect to the management page
 				$location.path('management');
+
 				$scope.selectFirstElement();
-				window.scrollTo(0, 0);
+				window.scrollTo(0, 0); // Scroll to the top
 
 				var emptyContact = $scope.createEmptyContact();
 				$scope.contacts.unshift(emptyContact);
 
+				// Focus first name of newly created element , so it's easier to start filling the form up.
 				var firstNameInput = document.getElementById('first-name');
 				if (firstNameInput) {
 					firstNameInput.focus();
