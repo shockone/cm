@@ -14,16 +14,16 @@
 
     <br>
 
-    <div class="input-group">
+    <div class="input-group" ng-class="editForm.email.$invalid ? 'has-error' : ''">
       <span class="input-group-addon" >Email</span>
       <input type="email" name="email" class="form-control" placeholder="john@example.com" ng-model="selectedContact.email" required>
     </div>
 
     <br>
 
-    <div class="input-group">
+    <div class="input-group" ng-class="editForm.birthDate.$invalid ? 'has-error' : ''">
       <span class="input-group-addon">Birth Date</span>
-      <input type="text" class="form-control" ng-model="selectedContact.birth_date" id="birth-date" ng-pattern="/^(\d{4}-\d{2}-\d{2})?$/">
+      <input type="text" name="birthDate" class="form-control" ng-model="selectedContact.birth_date" id="birth-date" ng-pattern="/^(\d{4}-\d{2}-\d{2})?$/">
     </div>
 
     <br>

@@ -56,10 +56,6 @@ textarea {
     font-weight: normal;
 }
 
-input.ng-invalid {
-    background-color: rgba(255, 0, 0, 0.17);
-}
-
 #zip {
     padding-left: 0;
 }
