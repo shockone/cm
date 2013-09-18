@@ -102,6 +102,7 @@ angular.module('contactManager.controllers', []).
 
 				var emptyContact = $scope.createEmptyContact();
 				$scope.contacts.unshift(emptyContact);
+				document.getElementById('first-name').focus();
 
 				return emptyContact;
 			};

@@ -9,36 +9,36 @@ describe('my app', function() {
   });
 
 
-  it('should automatically redirect to /view1 when location hash/fragment is empty', function() {
-    expect(browser().location().url()).toBe("/view1");
+  it('should automatically redirect to /management when location hash/fragment is empty', function() {
+    expect(browser().location().url()).toBe("/management");
   });
 
 
-  describe('view1', function() {
+  describe('management', function() {
 
     beforeEach(function() {
-      browser().navigateTo('#/view1');
+      browser().navigateTo('#/management');
     });
 
 
-    it('should render view1 when user navigates to /view1', function() {
+    it('should render management when user navigates to /management', function() {
       expect(element('[ng-view] p:first').text()).
-        toMatch(/partial for view 1/);
+        toMatch(/Phones/);
     });
 
   });
 
 
-  describe('view2', function() {
+  describe('selection', function() {
 
     beforeEach(function() {
-      browser().navigateTo('#/view2');
+      browser().navigateTo('#/selection');
     });
 
 
-    it('should render view2 when user navigates to /view2', function() {
+    it('should render selection when user navigates to /selection', function() {
       expect(element('[ng-view] p:first').text()).
-        toMatch(/partial for view 2/);
+        toMatch(/Send Email/);
     });
 
   });

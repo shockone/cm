@@ -9,7 +9,7 @@
  */
 
 var builder = require('../../bin/builder')
-  , common = require('./builder.common.js')
+  , common = require('./builder.common')
   , should = require('should');
 
 /**
