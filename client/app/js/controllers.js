@@ -3,26 +3,62 @@
 
 angular.module('contactManager.controllers', []).
 
-	controller('MainCtrl', ['$scope', '$route', '$location', '$http', '$resource', 'APIServer', 'toaster', 'Utility',
-		function ($scope, $route, $location, $http, $resource, APIServer, toaster, Utility) {
+	controller('MainCtrl', ['$scope', '$route', '$location', '$resource', 'APIServer', 'toaster', 'Utility',
+		function ($scope, $route, $location, $resource, APIServer, toaster, Utility) {
+
 			$scope.$route = $route;
+			var showError = function() { $scope.showNotification('error', 'Oops. Something went wrong.'); };
 
 
-			// Get contacts from the server.
-			$http.get(APIServer + '/contacts').
-				success(function (data) {
-					// Create a separate attribute for the phone, which was chosen as default, because
-					// there is no way to use a dynamic value in columnDefs for ng-grid.
-					angular.forEach(data, function (value, index) {
-						var phones = data[index].phones;
-						phones.default_phone_value = phones[phones.default_phone || 'cell_phone'];
-					});
+			var Contact = $resource(APIServer + '/contacts/:id', {}, {
+				create: {method:'POST', isArray:true},
+				update: {method:'PUT'}
+			});
 
-					$scope.contacts = data;
-				}).
-				error(function(data, status) {
-					$scope.showNotification('error', 'Can\'t receive data from the server. Error status ' + status);
+
+			/* REST Actions*/
+
+			// Index
+			Contact.query(function(data){
+				// Create a separate attribute for the phone, which was chosen as default, because
+				// there is no way to use a dynamic value in columnDefs for ng-grid.
+				angular.forEach(data, function (value, index) {
+					var phones = data[index].phones;
+					phones.default_phone_value = phones[phones.default_phone || 'cell_phone'];
 				});
+
+				$scope.contacts = data;
+			}, showError);
+
+
+			$scope.create = function (record) {
+				Contact.create(record, function(data){
+					var dbRecord = data[0];
+					$scope.setID(record, dbRecord._id);
+
+					$scope.showSuccessNotification(dbRecord, 'create');
+				}, showError);
+			};
+
+
+			$scope.update = function (record) {
+				record = angular.copy(record);
+				var id = record._id;
+				delete record._id;
+
+				Contact.update({id:id}, record, function(){
+					$scope.showSuccessNotification(record, 'update');
+				}, showError);
+			};
+
+
+			$scope.delete = function (record) {
+				Contact.delete({id:record._id}, function(){
+					$scope.showSuccessNotification(record, 'delete', 'warning');
+					$scope.removeContactFromArray(record);
+					$scope.selectFirstElement();
+				}, showError);
+			};
 
 
 			//Setup the grid
@@ -71,6 +107,12 @@ angular.module('contactManager.controllers', []).
 
 			$scope.showNotification = function (type, text) {
 				toaster.pop(type, '', text);
+			};
+
+			$scope.showSuccessNotification = function (contact, action, type) {
+				var fullName = [contact.first_name, contact.last_name].join(' ');
+				type = type ? type : 'success';
+				$scope.showNotification(type, 'The record „' + fullName + '“ has been successfully ' + action + 'd.');
 			};
 
 			//Deselect all items but select the first one on data loaded event
@@ -137,65 +179,6 @@ angular.module('contactManager.controllers', []).
 			};
 
 
-			$scope.create = function (record) {
-				var recordURI = APIServer + '/contacts/';
-				$http.post(recordURI, record).
-					success(function (data, status) {
-						if (status === 200) {
-							var db_record = data[0];
-							$scope.setID(record, db_record._id);
-
-							var full_name = [db_record.first_name, db_record.last_name].join(' ');
-							$scope.showNotification('success', 'The record „' + full_name + '“ has been successfully created.');
-						} else {
-							$scope.showNotification('error', 'Oops. Something went wrong.');
-						}
-					}).
-					error(function() {
-						$scope.showNotification('error', 'Oops. Something went wrong.');
-					});
-			};
-
-
-			$scope.update = function (record) {
-				record = angular.copy(record);
-				var recordURI = APIServer + '/contacts/' + record._id;
-				delete record._id;
-				$http.put(recordURI, record).
-					success(function (data) {
-						if (data.msg === 'success') {
-							var full_name = [record.first_name, record.last_name].join(' ');
-							$scope.showNotification('success', 'The record „' + full_name + '“ has been successfully updated.');
-						} else {
-							$scope.showNotification('error', 'Oops. Something went wrong.');
-						}
-					}).
-					error(function() {
-						$scope.showNotification('error', 'Oops. Something went wrong.');
-					});
-			};
-
-
-			$scope.delete = function (record) {
-				var recordURI = APIServer + '/contacts/' + record._id;
-				$http.delete(recordURI, record).
-					success(function (data) {
-						if (data.msg === 'success') {
-							var full_name = [record.first_name, record.last_name].join(' ');
-							$scope.showNotification('warning', 'The record „' + full_name + '“ has been successfully removed.');
-							$scope.removeContactFromArray(record);
-							$scope.selectFirstElement();
-						} else {
-							$scope.showNotification('error', 'Oops. Something went wrong.');
-						}
-					}).
-					error(function() {
-						$scope.showNotification('error', 'Oops. Something went wrong.');
-					});
-			};
-
-
-
 			$scope.createEmptyContact = function() {
 				return {"first_name": '',
 						"last_name": '',
@@ -226,7 +209,7 @@ angular.module('contactManager.controllers', []).
 		}]).
 
 
-	controller('ManagementCtrl', ['$scope', '$http', 'APIServer', 'Utility', function ($scope, $http, APIServer, Utility) {
+	controller('ManagementCtrl', ['$scope', 'Utility', function ($scope, Utility) {
 		$scope.$parent.multiSelect = false;
 		$scope.selectFirstElement();
 
