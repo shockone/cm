@@ -51,9 +51,9 @@
       <input type="text" class="form-control" ng-model="selectedContact.address.city">
     </div>
 
-    <div class="input-group col-sm-4" id="zip">
+    <div class="input-group col-sm-4" id="zip" ng-class="editForm.zip.$invalid ? 'has-error' : ''">
       <span class="input-group-addon">ZIP</span>
-      <input type="text" class="form-control" ng-model="selectedContact.address.zip">
+      <input type="text" name="zip" class="form-control" ng-model="selectedContact.address.zip" ng-pattern="/^(\d{5}(?:[-\s]\d{4})?)?$/">
     </div>
 
       </div>

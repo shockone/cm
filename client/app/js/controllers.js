@@ -263,8 +263,8 @@ angular.module('contactManager.controllers', []).
 			endDate: new Date(),
 			forceParse: false
 		})
-		.on('changeDate', function() {
-			$scope.selectedContact.birth_date = Utility.formatDate($scope.selectedContact.birth_date);
+		.on('changeDate', function(date) {
+			$scope.selectedContact.birth_date = date.format();
 		});
 
 	}]).
